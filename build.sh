@@ -25,11 +25,11 @@ elif [[ $version == *"16.04"* ]] ; then
     sudo apt-get update
     sudo apt-get install cuda-8-0
 elif [[ $version == *"18.10"* ]] ; then
-    wget http://developer.download.nvidia.com/compute/cuda/repos/ubuntu1810/x86_64/cuda-repo-ubuntu1810_10.1.168-1_amd64.deb
-    sudo dpkg -i cuda-repo-ubuntu1810_10.1.168-1_amd64.deb
-    rm cuda-repo-ubuntu1810_10.1.168-1_amd64.deb
+#    wget http://developer.download.nvidia.com/compute/cuda/repos/ubuntu1810/x86_64/cuda-repo-ubuntu1810_10.1.168-1_amd64.deb
+#    sudo dpkg -i cuda-repo-ubuntu1810_10.1.168-1_amd64.deb
+#    rm cuda-repo-ubuntu1810_10.1.168-1_amd64.deb
     sudo apt update
-    sudo apt install cuda
+#    sudo apt install cuda
 else
     echo "Don't use this on anything except 14.04, 15.04, or 16.04"
     exit
@@ -55,7 +55,7 @@ cd ../..
 #Up to date OpenNI2
 git clone https://github.com/occipital/OpenNI2.git
 cd OpenNI2
-make -j8
+make -j8 &&
 cd ..
 
 #Actually build ElasticFusion
