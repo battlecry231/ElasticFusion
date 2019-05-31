@@ -25,11 +25,18 @@ elif [[ $version == *"16.04"* ]] ; then
     sudo apt-get update
     sudo apt-get install cuda-8-0
 elif [[ $version == *"18.10"* ]] ; then
-#    wget http://developer.download.nvidia.com/compute/cuda/repos/ubuntu1810/x86_64/cuda-repo-ubuntu1810_10.1.168-1_amd64.deb
-#    sudo dpkg -i cuda-repo-ubuntu1810_10.1.168-1_amd64.deb
-#    rm cuda-repo-ubuntu1810_10.1.168-1_amd64.deb
-    sudo apt update
-#    sudo apt install cuda
+    nvcc --version &> /dev/null
+    if [ $? -eq 0 ]; then
+        echo "Cuda already installed..."
+        sudo apt update
+    else
+        echo "Installing Cuda..."
+        wget http://developer.download.nvidia.com/compute/cuda/repos/ubuntu1810/x86_64/cuda-repo-ubuntu1810_10.1.168-1_amd64.deb
+        sudo dpkg -i cuda-repo-ubuntu1810_10.1.168-1_amd64.deb
+        rm cuda-repo-ubuntu1810_10.1.168-1_amd64.deb
+        sudo apt update
+        sudo apt install cuda
+    fi
 else
     echo "Don't use this on anything except 14.04, 15.04, or 16.04"
     exit
