@@ -3,3 +3,6 @@ deps/
 .project
 .cproject
 *.user
+.vscode/
+dyson_lab.klg
+dyson_lab.klg.freiburg
