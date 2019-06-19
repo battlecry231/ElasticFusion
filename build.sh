@@ -24,12 +24,31 @@ elif [[ $version == *"16.04"* ]] ; then
     sudo add-apt-repository ppa:openjdk-r/ppa 
     sudo apt-get update
     sudo apt-get install cuda-8-0
+elif [[ $version == *"18.10"* ]] ; then
+    nvcc --version &> /dev/null
+    if [ $? -eq 0 ]; then
+        echo "Cuda already installed..."
+        sudo apt update
+    else
+        echo "Installing Cuda..."
+        wget http://developer.download.nvidia.com/compute/cuda/repos/ubuntu1810/x86_64/cuda-repo-ubuntu1810_10.1.168-1_amd64.deb
+        sudo dpkg -i cuda-repo-ubuntu1810_10.1.168-1_amd64.deb
+        rm cuda-repo-ubuntu1810_10.1.168-1_amd64.deb
+        sudo apt update
+        sudo apt install cuda
+    fi
 else
     echo "Don't use this on anything except 14.04, 15.04, or 16.04"
     exit
 fi
 
-sudo apt-get install -y cmake-qt-gui git build-essential libusb-1.0-0-dev libudev-dev openjdk-7-jdk freeglut3-dev libglew-dev libsuitesparse-dev libeigen3-dev zlib1g-dev libjpeg-dev
+sudo apt-get install -y cmake-qt-gui git build-essential libusb-1.0-0-dev libudev-dev freeglut3-dev libglew-dev libsuitesparse-dev libeigen3-dev zlib1g-dev libjpeg-dev
+
+if [[ $version == *"18.10"* ]] ; then
+    sudo apt install -y openjdk-11-jdk
+else
+    sudo apt-get install -y openjdk-7-jdk
+fi
 
 #Installing Pangolin
 git clone https://github.com/stevenlovegrove/Pangolin.git
@@ -43,7 +62,7 @@ cd ../..
 #Up to date OpenNI2
 git clone https://github.com/occipital/OpenNI2.git
 cd OpenNI2
-make -j8
+make -j8 &&
 cd ..
 
 #Actually build ElasticFusion
