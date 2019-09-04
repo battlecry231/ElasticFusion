@@ -18,6 +18,9 @@
  
 #include "MainController.h"
 
+#include <iostream>
+#include <chrono>
+
 MainController::MainController(int argc, char * argv[])
  : good(true),
    eFusion(0),
@@ -220,8 +223,33 @@ void MainController::launch()
 
 void MainController::run()
 {
+    int curentTick = 0;
+    auto t1 = std::chrono::system_clock::now();
+    auto t2 = std::chrono::system_clock::now();
+    std::chrono::time_point<std::chrono::_V2::system_clock, std::chrono::nanoseconds> t3;
+    std::chrono::duration<double> diff = t2 - t1;
+    std::chrono::duration<double> c_time = t2 - t1;
+    std::ofstream bmFile;
+    size_t free_byte, total_byte;
     while(!pangolin::ShouldQuit() && !((!logReader->hasMore()) && quiet) && !(eFusion->getTick() == end && quiet))
     {
+        //benchmark
+        if (curentTick < eFusion->getTick())
+        {
+            curentTick = eFusion->getTick();
+            t2 = std::chrono::system_clock::now();
+            diff = t2 - t1;
+            c_time = t2 -t3;            
+            cudaMemGetInfo(&free_byte, &total_byte);
+            bmFile.open("benchmark.txt", std::ios_base::app);
+            bmFile << std::to_string(c_time.count()) << ", ";
+            bmFile << std::to_string(diff.count()) << ", ";
+            bmFile << std::to_string(total_byte - free_byte);
+            bmFile << "\n";
+            bmFile.close();
+            t1 = std::chrono::system_clock::now();
+            // end
+        }
         if(!gui->pause->Get() || pangolin::Pushed(*gui->step))
         {
             if((logReader->hasMore() || rewind) && eFusion->getTick() < end)
